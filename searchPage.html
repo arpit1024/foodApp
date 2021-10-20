@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./styles/style.css">
+</head>
+<body>
+    <div id='navbar'></div>
+    <h1>Welcome to the Food Website</h1>
+    <h4>Search Meals By Name You Want to Eat</h4>
+    <div id="srh">
+        <input type="text" placeholder="Search for food" id="foodName">
+         <button id="btn">Search</button>
+        <br>
+    <label for="foodName" id='lbl'></label>
+    </div>
+    <div id="container"></div>
+
+   <script type="module">
+   import {getData,appendData} from  "./scripts/script.js"
+   import {navbar} from "./components/navbar.js"
+   let nav = document.getElementById('navbar');
+   nav.innerHTML = navbar();
+
+    let btn = document.getElementById('btn');
+    btn.onclick = function(){
+        let query = document.getElementById('foodName').value;
+        getData(`http://www.themealdb.com/api/json/v1/1/search.php?s=${query}`).then(res=>{
+            let container = document.getElementById('container')
+            container.innerHTML = ''
+            console.log(res.meals)
+            let label = document.getElementById('lbl')
+            if(res.meals === null)
+            {
+                label.textContent = 'Results Found ' + "0";
+                label.style.color = "red"
+            }
+            else{
+                 label.textContent = 'Results Found ' + res.meals.length;
+                  appendData(res,container)
+                  label.style.color = "green"
+            }
+        })
+        .catch(err=>{
+            console.log(err)
+        })
+    }
+   </script>
+</body>
+</html>
